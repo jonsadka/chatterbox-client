@@ -6,8 +6,12 @@ var friends = {};
 // app stores all the methods available to act on our data
 var app = {};
 
-// init checks data for our tests and returns it only if data is returned in our expected form
-app.init = function(dataFromServer){return dataFromServer;};
+// init checks data for comprimised messages and returns the non-comprimised ones
+app.init = function(dataFromServer){
+  // create a test to filter comprimised messages
+
+  return dataFromServer;
+};
 
 // send takes in a message object containing username, text, and roomname and ???TBD??
 app.send = function( dataToServer, urlLocation ){
@@ -33,7 +37,11 @@ app.fetch = function( urlLocation ){
     // data: JSON.stringify(data),
     contentType: 'application/json',
     success: function ( serverMessages ) {
-      app.init( serverMessages );
+      // return safe messages
+      var filteredServerMessages = app.init( serverMessages );
+
+      // continue to append each message to the DOM
+      each(filteredServerMessages, app.addMessage( singleFilteredMessage ));
       console.log('chatterbox: Sucessfully retrieved messages from server.');
     },
     error: function (data) {
@@ -44,31 +52,25 @@ app.fetch = function( urlLocation ){
 
 // clear all messages in browser
 app.clearMessages = function() {
-  $( document ).ready( function() {
-    $('#chats').children().remove();
-  } );
+  $('#chats').children().remove();
 }
 
 // display all outstanding messages to user
 app.addMessage = function( messageToDisplay ) {
-  $( document ).ready( function() {
-    var userName =  '<div class="username">' + messageToDisplay.username + '</div>';
-    var roomName =  '<div class="roomname">' + messageToDisplay.roomname + '</div>';
-    var text =  '<div class="text">' + messageToDisplay.text + '</div>';
+  var userName =  '<div class="username">' + messageToDisplay.username + '</div>';
+  var roomName =  '<div class="roomname">' + messageToDisplay.roomname + '</div>';
+  var text =  '<div class="text">' + messageToDisplay.text + '</div>';
 
-    var newMessage = '<div>' + userName + ' in ' +
-                               roomName + ': ' +
-                               text + '</div>';
-    $('#chats').prepend( newMessage );
-  });
+  var newMessage = '<div>' + userName + ' in ' +
+                             roomName + ': ' +
+                             text + '</div>';
+  $('#chats').prepend( newMessage );
 };
 
 // add a chat room
 app.addRoom = function( roomName ){
-  $(document).ready( function(){
-    var newRoomName = '<div>' + roomName + '</div>';
-    $('#roomSelect').append( newRoomName );
-  });
+  var newRoomName = '<div>' + roomName + '</div>';
+  $('#roomSelect').append( newRoomName );
 };
 
 // add a friend to the friends object
@@ -84,9 +86,11 @@ app.handleSubmit = function( textToSend ){
 
   // send the message object
   app.send( messageToServer );
-}
+};
 
 $(document).ready( function(){
+  // once data has been retrieved, add those messages
+  app.fetch( url );
 
   // add friend when clicking on username
   $('#chats').on('click', '.username', function(){
@@ -98,11 +102,8 @@ $(document).ready( function(){
     var text = $('#message').val();
     app.handleSubmit( text );
   });
+
+  // have a listener to clear all messages using app.clearMessages
+
+  // have a listener to add a chat room using app.addRoom
 });
-
-
-// var message = {
-//   'username': 'shawndrost',
-//   'text': 'trololo',
-//   'roomname': '4chan'
-// };
