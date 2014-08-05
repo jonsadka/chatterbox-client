@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
-
+    <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"> -->
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
@@ -17,7 +17,19 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <!-- Your HTML goes here! -->
+      <div id="friends" class="col-sm-3"></div>
+      <div id="content" class="col-sm-6">
+        <div id="send">
+          Enter Current User:<input type="text" id="message">
+          Enter Message:<input type="text" id="currentuser">
+          <button>Submit Message</button>
+        </div>
+        </div>
+        <div id="chats"></div>
+      </div>
+      <div id="roomselect" class="col-sm-3"></div>
     </div>
+
+  <!-- <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script> -->
   </body>
 </html>
