@@ -1,6 +1,7 @@
 // define server url
 var url = 'https://api.parse.com/1/classes/chatterbox';
 
+var currentRoom = null;
 var friends = {};
 
 // app stores all the methods available to act on our data
@@ -10,6 +11,7 @@ var app = {};
 app.init = function(dataFromServer){
   // create a test to filter out comprimised messages contained within any message property
   var reducedData = [];
+  var reducedRooms = {};
   for( var i = 0, count = dataFromServer.results.length; i < count; i++ ){
     var safe = true;
     for( key in  dataFromServer.results[i] ){
@@ -21,9 +23,12 @@ app.init = function(dataFromServer){
       }
     }
     // if all message properties are safe, save the message and send it to the user
-    if(safe) reducedData.push( dataFromServer.results[i] );
+    if(safe){
+      reducedData.push( dataFromServer.results[i] );
+      reducedRooms[ dataFromServer.results[i].roomname ] = dataFromServer.results[i].roomname;
+    }
   }
-  var filteredData = {results: reducedData};
+  var filteredData = {results: reducedData, existingRooms: reducedRooms };
   return filteredData;
 };
 
@@ -54,6 +59,7 @@ app.fetch = function( urlLocation ){
       // filter through each message and only return safe messages
       var filteredServerMessages = app.init( serverMessages );
       _.each(filteredServerMessages.results, app.addMessage);
+      _.each(filteredServerMessages.existingRooms, app.addRoom);
       console.log('chatterbox: Sucessfully retrieved safe messages from server.');
     },
     error: function (data) {
@@ -62,33 +68,52 @@ app.fetch = function( urlLocation ){
   });
 };
 
-// clear all messages in browser
-app.clearMessages = function() {
+// clear all messages, friends, and rooms in browser
+app.clearAllContent = function() {
+  $('#roomselect').children().remove();
   $('#chats').children().remove();
 };
 
 // display all outstanding messages to user
 app.addMessage = function( messageToDisplay ) {
-  var userName =  '<div class="username">' + messageToDisplay.username + '</div>';
-  var roomName =  '<div class="roomname">' + messageToDisplay.roomname + '</div>';
-  var text =  '<div class="text">' + messageToDisplay.text + '</div>';
+  if ( currentRoom === null || currentRoom === messageToDisplay.roomname ){
+    // make name bold if in friends list
+    if ( messageToDisplay.username === friends[messageToDisplay.username] ){
+      var userName =  '<div class="username"><b>' + messageToDisplay.username + '</b></div>';
+    } else {
+      var userName =  '<div class="username">' + messageToDisplay.username + '</div>';
+    }
 
-  var newMessage = '<div class="fullmessage">' + messageToDisplay.createdAt +
-                                                 userName + ' in ' +
-                                                 roomName + ': ' +
-                                                 text + '</div>';
-  $('#chats').append( newMessage );
+    var formattedTime = $.timeago(messageToDisplay.createdAt);
+    var timeStamp = '<time class="timeago">' + formattedTime + '</time>';
+    var roomName =  '<div class="roomname">' + messageToDisplay.roomname + '</div>';
+    var text =  '<div class="text">' + messageToDisplay.text + '</div>';
+
+    var newMessage = '<div class="fullmessage">' + userName + ": " +
+                                                   text + "</br>" +
+                                                   timeStamp + " " +
+                                                   roomName +
+                                                    '</div>';
+    $('#chats').append( newMessage );
+  }
 };
 
 // add a chat room
 app.addRoom = function( roomName ){
-  var newRoomName = '<div>' + roomName + '</div>';
-  $('#roomSelect').append( newRoomName );
+  if ( roomName !== undefined){
+    var newRoomName = '<div class="roomname">' + roomName + '</div>';
+    $('#roomselect').append( newRoomName );
+  }
 };
 
 // add a friend to the friends object
-app.addFriend = function( userNameNode ) {
-  friends[ userNameNode ] = userNameNode; //C NEED TO REFORMAT
+app.addFriend = function( friendName ) {
+// if friend does not exist, add him/her for friends object and append node
+  if ( !friends[friendName] ){
+    friends[ friendName ] = friendName;
+    newFriend = '<div class="friend">' + friendName + '</div>';
+    $('#friendslist').append( newFriend );
+  }
 };
 
 app.handleSubmit = function( userNameToSend, textToSend, roomToSend ){
@@ -101,30 +126,59 @@ app.handleSubmit = function( userNameToSend, textToSend, roomToSend ){
   app.send( messageToServer );
 };
 
+// list of listeners when page loads
 $(document).ready( function(){
 
+  // clear all existing messages and display new ones
+  var refreshContent = function(){
+      app.clearAllContent();
+      app.fetch( url );
+  };
 
   // once data has been retrieved, add those messages
-  app.fetch( url );
+  refreshContent();
 
   // add friend when clicking on username
   $('#chats').on('click', '.username', function(){
-    app.addFriend( $(this) );
+    app.addFriend( $(this).text() );
+    refreshContent();
+  });
+
+  // add a new room and set that room to current room
+  $('#chatrooms').on('click', '#addnewroom',function(){
+    currentRoom = $('#newRoomName').val();
+    refreshContent();
   });
 
   // extract text and pass to handleSubmit to format before sending to server
   $('#send').on('click', 'button',function(){
     var username = $('#currentuser').val();
     var text = $('#message').val();
-    app.handleSubmit( username, text, "room" );
+    app.handleSubmit( username, text, currentRoom );
   });
 
+  // initialize timeago
+  jQuery("time.timeago").timeago();
+
+  // click to go into desired chatroom
+  $('#roomselect').on('click', '.roomname',function(){
+    currentRoom = $(this).text();
+    refreshContent();
+  });
+
+  $('#chatrooms').on('click', '#showallrooms',function(){
+    currentRoom = null;
+    refreshContent();
+  });
+
+  $('#chats').on('click', '.roomname',function(){
+    currentRoom = $(this).text();
+    refreshContent();
+  });
+
+  // refresh content at specified interval
   setInterval( function(){
-    app.clearMessages();
-    app.fetch(url);
-  }, 3000 );
+    refreshContent();
+  }, 5000 );
 
-  // have a listener to clear all messages using app.clearMessages
-
-  // have a listener to add a chat room using app.addRoom
 });

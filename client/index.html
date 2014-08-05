@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
-    <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"> -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/jquery-timeago/jquery.timeago.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
     <!-- your scripts -->
     </script>
@@ -17,19 +18,29 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <div id="friends" class="col-sm-3"></div>
-      <div id="content" class="col-sm-6">
+      <div class="col-sm-2">
+        FRIENDS:
+        <div id="friendslist"></div>
+      </div>
+      <div class="col-sm-7" id="content" >
         <div id="send">
-          Enter Current User:<input type="text" id="message">
-          Enter Message:<input type="text" id="currentuser">
-          <button>Submit Message</button>
-        </div>
+          User Name:<input type="text" id="currentuser">
+          Message:<input type="text" id="message">
+          <button>Submit</button>
         </div>
         <div id="chats"></div>
       </div>
-      <div id="roomselect" class="col-sm-3"></div>
+      <div id="chatrooms" class="col-sm-3">
+          Room Name:<input type="text" id="newRoomName">
+          <button id="addnewroom">Add new room:</button>
+
+          <button id="showallrooms">Show All Rooms</button>
+          <div id="roomselect">
+          </div>
+      </div>
     </div>
 
-  <!-- <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script> -->
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
   </body>
 </html>
