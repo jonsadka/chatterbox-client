@@ -4,43 +4,35 @@
     <meta charset="utf-8">
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
-    <script src="bower_components/jquery-timeago/jquery.timeago.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
+    
     <!-- your scripts -->
-    </script>
     <script src="scripts/config.js"></script>
     <script src="scripts/app.js"></script>
-
   </head>
   <body>
+    <script>
+      $(function(){
+        app.init();
+      });
+    </script>
     <div id="main">
       <h1>chatterbox</h1>
-      <div class="col-sm-2">
-        FRIENDS:
-        <div id="friendslist"></div>
+      <!-- Your HTML goes here! -->
+      <div class="spinner"><img src="images/spiffygif_46x46.gif"></div>
+      <div id="rooms">
+        Room: 
+        <select id="roomSelect">
+        </select>
       </div>
-      <div class="col-sm-7" id="content" >
-        <div id="send">
-          User Name:<input type="text" id="currentuser">
-          Message:<input type="text" id="message">
-          <button>Submit</button>
-        </div>
-        <div id="chats"></div>
-      </div>
-      <div id="chatrooms" class="col-sm-3">
-          Room Name:<input type="text" id="newRoomName">
-          <button id="addnewroom">Add new room:</button>
-
-          <button id="showallrooms">Show All Rooms</button>
-          <div id="roomselect">
-          </div>
-      </div>
+      <form action="#" id="send" method="post">
+        <input type="text" name="message" id="message"/>
+        <input type="submit" name="submit" class="submit"/>
+      </form>
+      <div id="chats"></div>
     </div>
-
-  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-
   </body>
 </html>
