@@ -18,6 +18,7 @@ $(function() {
       app.$chats = $('#chats');
       app.$roomSelect = $('#roomSelect');
       app.$send = $('#send');
+      app.$friends = $('#friends');
 
       // Add listeners
       app.$main.on('click', '.username', app.addFriend);
@@ -166,6 +167,15 @@ $(function() {
       if (username !== undefined) {
         console.log('chatterbox: Adding %s as a friend', username);
 
+        // Display friend if a new friend
+        if ( !app.friends[username] ){
+          var $friend = $('<br><span class="friend"/>')
+          $friend.text(username).attr('friend-name', username).appendTo($friend);
+
+          // Add the message to the UI
+          app.$friends.append($friend);
+        }
+
         // Store as a friend
         app.friends[username] = true;
 
@@ -173,6 +183,7 @@ $(function() {
         // Escape the username in case it contains a quote
         var selector = '[data-username="'+username.replace(/"/g, '\\\"')+'"]';
         var $usernames = $(selector).addClass('friend');
+
       }
     },
     saveRoom: function(evt) {

@@ -1,18 +1,20 @@
+* {
+    box-sizing: border-box;
+}
 body {
     background: #eee;
     text-align: center;
-    padding: 0 25px;
+    padding: 0;
     font-family: arial, sans-serif;
 }
 
 #main {
-    width: 500px;
-    margin: auto;
+    width: 100%;
     text-align: left;
     background: white;
     padding: 50px 60px;
-    border: solid #ddd;
     border-width: 0 1px 1px 1px;
+    float: left;
 }
 
 #main h1 {
@@ -54,9 +56,24 @@ form {
 
 form input[type=text] {
     margin-right: 10px;
-    width: 70%;
+    width: 80%;
     font-size: 12px;
     padding: 5px;
+}
+
+#content {
+    width: 100%;
+}
+
+#friends {
+    width: 20%;
+    float: left;
+    display: block;
+}
+
+#chats {
+    width: 80%;
+    float: right;
 }
 
 .chat {
@@ -84,5 +101,5 @@ form input[type=text] {
 }
 
 .friend {
-    color: blue;
+    color: RGBA(68, 181, 156, 1);
 }
