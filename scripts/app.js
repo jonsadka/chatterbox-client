@@ -2,10 +2,11 @@ var app;
 $(function() {
   app = {
     //Set default values
-    server: 'https://api.parse.com/1/classes/chatterbox/',
+    server: 'http://127.0.0.1:3000/1/classes/messages',
     username: 'anonymous',
     roomname: 'lobby',
     lastMessageId: 0,
+    objectId: 0,
     friends: {},
 
     init: function() {
@@ -57,9 +58,10 @@ $(function() {
       $.ajax({
         url: app.server,
         type: 'GET',
+        dataType: 'JSON',
         contentType: 'application/json',
-        data: { order: '-createdAt'},
         success: function(data) {
+          console.log(data);
           console.log('chatterbox: Messages fetched');
 
           // Don't bother if we have nothing to work with
@@ -158,7 +160,7 @@ $(function() {
         $message.text(data.text).appendTo($chat);
 
         // Add the message to the UI
-        app.$chats.append($chat);
+        app.$chats.prepend($chat);
       }
     },
     addFriend: function(evt) {
@@ -219,9 +221,11 @@ $(function() {
       var message = {
         username: app.username,
         text: app.$message.val(),
-        roomname: app.roomname || 'lobby'
+        roomname: app.roomname || 'lobby',
+        createdAt: new Date(),
+        objectId: app.objectId
       };
-
+      app.objectId++;
       app.send(message);
 
       // Stop the form from submitting
@@ -229,7 +233,7 @@ $(function() {
     },
     startSpinner: function(){
       $('.spinner img').show();
-      $('form input[type=submit]').attr('disabled', "true");
+      // $('form input[type=submit]').attr('disabled', "true");
     },
 
     stopSpinner: function(){
