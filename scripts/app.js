@@ -2,7 +2,7 @@ var app;
 $(function() {
   app = {
     //Set default values
-    server: 'http://127.0.0.1:3000/1/classes/messages',
+    server: '104.40.6.44/rooms/messages',
     username: 'anonymous',
     roomname: 'lobby',
     lastMessageId: 0,
