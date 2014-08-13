@@ -60,14 +60,13 @@ $(function() {
         dataType: 'JSON',
         contentType: 'application/json',
         success: function(data) {
-          console.log(data);
           console.log('chatterbox: Messages fetched');
 
           // Don't bother if we have nothing to work with
           if (!data.results || !data.results.length) { return; }
 
           // Get the last message
-          var mostRecentMessage = data.results[data.results.length-1];
+          var mostRecentMessage = data.results[0];
           var displayedRoom = $('.chat span').first().data('roomname');
           app.stopSpinner();
           // Only bother updating the DOM if we have a new message
@@ -139,7 +138,7 @@ $(function() {
     },
     addMessage: function(data) {
       if (!data.roomname)
-        data.roomname = 'lobby';
+        data.roomname = 'Lobby';
 
       // Only add messages that are in our current room
       if (data.roomname === app.roomname) {
@@ -159,7 +158,7 @@ $(function() {
         $message.text(data.text).appendTo($chat);
 
         // Add the message to the UI
-        app.$chats.prepend($chat);
+        app.$chats.append($chat);
       }
     },
     addFriend: function(evt) {
@@ -223,7 +222,6 @@ $(function() {
         roomname: app.roomname || 'lobby',
         createdAt: new Date()
       };
-      app.objectId++;
       app.send(message);
 
       // Stop the form from submitting
