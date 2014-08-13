@@ -4,9 +4,8 @@ $(function() {
     //Set default values
     server: 'http://104.40.6.44',
     username: 'anonymous',
-    roomname: 'lobby',
+    roomname: 'Lobby',
     lastMessageId: 0,
-    objectId: 0,
     friends: {},
 
     init: function() {
@@ -222,8 +221,7 @@ $(function() {
         username: app.username,
         text: app.$message.val(),
         roomname: app.roomname || 'lobby',
-        createdAt: new Date(),
-        objectId: app.objectId
+        createdAt: new Date()
       };
       app.objectId++;
       app.send(message);
